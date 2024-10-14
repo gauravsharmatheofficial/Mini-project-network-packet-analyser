@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network Packet Analyzer</title>
+    <style>
+      /* Basic Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #1c1c1c;
+        color: #ddd;
+        line-height: 1.6;
+      }
+
+      /* Header & Nav */
+      header {
+        background: linear-gradient(45deg, #007acc, #0f4c75);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      nav {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 1.1rem;
+        padding: 0.5rem 1rem;
+        transition: background 0.3s;
+      }
+
+      nav a:hover {
+        background: #333;
+        border-radius: 4px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      section {
+        margin-bottom: 2rem;
+        padding: 2rem;
+        background-color: #2e2e2e;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      h2 {
+        font-size: 1.75rem;
+        color: #00aaff;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        margin-bottom: 1rem;
+      }
+
+      /* Flex Section for Graph and Blog */
+      .flex-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 1.5rem;
+      }
+
+      /* Graph Section */
+      .graph-container {
+        padding: 1.5rem;
+        background-color: #2e2e2e;
+        border: 2px solid #00aaff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .refresh-button {
+        background-color: #00aaff;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        transition: background 0.3s;
+      }
+
+      .refresh-button:hover {
+        background-color: #0088cc;
+      }
+
+      /* Blog Section */
+      .blog-section {
+        display: flex;
+        overflow-x: auto; /* Enable horizontal scrolling */
+        white-space: nowrap;
+        padding: 1rem 0; /* Padding for the scrolling area */
+        scroll-behavior: smooth; /* Smooth scrolling */
+      }
+
+      .blog-post {
+        display: inline-block;
+        width: 300px;
+        height: 200px;
+        background-color: #333;
+        padding: 1.5rem;
+        margin-right: 1rem;
+        border-radius: 8px;
+        color: #ddd;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        flex-shrink: 0;
+      }
+
+      .blog-post h3 {
+        color: #00aaff;
+        font-size: 1.25rem;
+        margin: 1rem 0 0.5rem;
+      }
+
+      .blog-post p {
+        font-size: 0.9rem;
+        color: #ccc;
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 5;
+      }
+
+      /* Counter Section */
+      .counter-section {
+        display: flex;
+        justify-content: space-around;
+        text-align: center;
+        margin: 2rem 0;
+      }
+
+      .counter {
+        background-color: #333;
+        padding: 1rem;
+        border-radius: 8px;
+        width: 45%;
+        color: #00aaff;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      /* Quiz Section */
+      .quiz-section {
+        background-color: #2e2e2e;
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+      }
+
+      .quiz-section h2 {
+        margin-bottom: 1rem;
+      }
+
+      .quiz-section ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .quiz-section li {
+        margin-bottom: 0.5rem;
+        background: linear-gradient(45deg, #007acc, #0f4c75);
+        padding: 0.5rem;
+        border-radius: 5px;
+        transition: transform 0.2s;
+      }
+
+      .quiz-section li a {
+        color: white;
+        text-decoration: none;
+      }
+
+      .quiz-section li:hover {
+        transform: scale(1.05);
+      }
+
+      footer {
+        background: #111;
+        color: #777;
+        text-align: center;
+        padding: 1rem;
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Network Packet Analyzer</h1>
+      <nav>
+        <a href="#intro">Home</a>
+        <a href="#methods">Prevention Methods</a>
+        <a href="#graph">Analysis</a>
+        <a href="#blog">Attacks</a>
+        <a href="#quiz">Quiz</a>
+        <a href="#footer">Contact</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <!-- Intro Section -->
+      <section id="intro">
+        <h2>Welcome to Network Packet Analyzer</h2>
+        <p>
+          This platform provides insights into network packets, security analysis, and understanding various cyber threats. Learn to monitor and protect your
+          network effectively against potential risks.
+        </p>
+        <p>
+          Network packets are fundamental units of communication in computer networks, encapsulating data that is transmitted between devices. They can be
+          intercepted and analyzed to gain insights into network activity, detect anomalies, and enhance security measures.
+        </p>
+      </section>
+
+      <!-- Prevention Methods Section -->
+      <section id="methods">
+        <h2>Methods to Prevent Cyber Threats</h2>
+        <p>Preventing cyber threats is crucial in maintaining the integrity of your network. Here are some effective methods:</p>
+        <ul>
+          <li><strong>Use Strong Passwords:</strong> Implement complex passwords and change them regularly.</li>
+          <li><strong>Implement Two-Factor Authentication:</strong> Enhance security by requiring an additional verification step.</li>
+          <li><strong>Regular Software Updates:</strong> Keep your systems and applications updated to fix vulnerabilities.</li>
+          <li><strong>Firewalls and Intrusion Detection Systems:</strong> Use these tools to monitor and control incoming and outgoing network traffic.</li>
+          <li><strong>Educate Users:</strong> Conduct regular training to inform users about security best practices and phishing attempts.</li>
+          <li><strong>Secure Wi-Fi Networks:</strong> Use WPA3 encryption and regularly update your router firmware.</li>
+        </ul>
+      </section>
+
+      <!-- Counter Section -->
+      <section class="counter-section">
+        <div class="counter" id="monthlyAttacks">Attacks this Month: 0</div>
+        <div class="counter" id="dailyAttacks">Attacks Today: 0</div>
+      </section>
+
+      <!-- Graph Section -->
+      <div class="graph-container" id="graph">
+        <button class="refresh-button" onclick="refreshGraph()">Refresh Graph</button>
+        <canvas id="networkGraph" width="400" height="200">Graph Placeholder</canvas>
+      </div>
+
+      <!-- Blog Section -->
+      <div id="blog" class="blog-section">
+        <div class="blog-post">
+          <h3>Phishing Attacks</h3>
+          <p>
+            Phishing is a technique where attackers impersonate trusted organizations to steal sensitive information. It's vital to verify sender information
+            before clicking on links or providing data.
+          </p>
+        </div>
+        <div class="blog-post">
+          <h3>Malware Threats</h3>
+          <p>
+            Malware is malicious software designed to harm or exploit any programmable device, service, or network. Always use reliable antivirus programs and
+            keep them updated.
+          </p>
+        </div>
+        <div class="blog-post">
+          <h3>DDoS Attacks</h3>
+          <p>
+            Distributed Denial of Service (DDoS) attacks aim to overwhelm systems, rendering them unavailable. Implement traffic filtering and rate limiting to
+            mitigate these risks.
+          </p>
+        </div>
+        <div class="blog-post">
+          <h3>Network Security</h3>
+          <p>
+            Ensuring network security involves deploying firewalls, intrusion detection systems, and encryption protocols to protect data integrity and
+            confidentiality.
+          </p>
+        </div>
+        <div class="blog-post">
+          <h3>Cybersecurity Trends</h3>
+          <p>
+            Staying updated on cybersecurity trends helps organizations adapt their strategies to emerging threats. Regular assessments and updates to security
+            protocols are essential.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quiz Section -->
+      <section id="quiz" class="quiz-section">
+        <h2>Test Your Knowledge</h2>
+        <ul>
+          <li><a href="#">Quiz 1: Cybersecurity Basics</a></li>
+          <li><a href="#">Quiz 2: Identifying Threats</a></li>
+          <li><a href="#">Quiz 3: Network Security Measures</a></li>
+          <li><a href="#">Quiz 4: Malware Recognition</a></li>
+        </ul>
+      </section>
+    </div>
+
+    <footer id="footer">
+      <p>Contact us: support@networkanalyzer.com</p>
+      <p>© 2024 Network Packet Analyzer</p>
+    </footer>
+
+    <script>
+      // Attack Counters
+      let monthlyAttacks = 0;
+      let dailyAttacks = 0;
+
+      function updateCounters() {
+        monthlyAttacks += Math.floor(Math.random() * 10000); // Simulate random increments
+        dailyAttacks += Math.floor(Math.random() * 1000); // Simulate random increments
+        document.getElementById("monthlyAttacks").textContent = `Attacks this Month: ${monthlyAttacks}`;
+        document.getElementById("dailyAttacks").textContent = `Attacks Today: ${dailyAttacks}`;
+      }
+
+      setInterval(updateCounters, 2000); // Update counters every 2 seconds
+
+      function refreshGraph() {
+        const ctx = document.getElementById("networkGraph").getContext("2d");
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clear previous graph
+        // Sample data and graph drawing
+        const sampleData = [20, 40, 60, 80, 100];
+        ctx.fillStyle = "rgba(0, 174, 239, 0.6)";
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Background
+        ctx.fillStyle = "rgba(255, 0, 0, 0.7)"; // Bar color
+        const barWidth = ctx.canvas.width / sampleData.length;
+        sampleData.forEach((value, index) => {
+          ctx.fillRect(index * barWidth, ctx.canvas.height - value, barWidth - 5, value);
+        });
+      }
+
+      // Automatic horizontal scrolling for blog section
+      let scrollInterval = setInterval(() => {
+        const blogSection = document.querySelector(".blog-section");
+        blogSection.scrollBy({ left: 1, behavior: "smooth" });
+      }, 50);
+
+      // Pause scrolling on mouse hover
+      const blogSection = document.querySelector(".blog-section");
+      blogSection.addEventListener("mouseover", () => clearInterval(scrollInterval));
+      blogSection.addEventListener("mouseout", () => {
+        scrollInterval = setInterval(() => {
+          blogSection.scrollBy({ left: 1, behavior: "smooth" });
+        }, 50);
+      });
+    </script>
+  </body>
+</html>
